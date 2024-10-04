@@ -18,8 +18,9 @@ Optei por realizar os desafios utilizando um mini projeto, aplicando o princípi
 ## Scripts
 
 Incluí neste repositório os scripts para:
-1. Criação da tabela `products`.
-2. Inserção dos dados.
+1. Criação do banco `giusoft`
+2. Criação da tabela `products`.
+3. Inserção dos dados.
 
 ## Rotas
 
