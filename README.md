@@ -21,6 +21,18 @@ Incluí neste repositório os scripts para:
 1. Criação da tabela `products`.
 2. Inserção dos dados.
 
+## Rotas
+
+- Para iniciar o servidor, execute o comando:
+  ```bash
+  php -S localhost:8000 -t public
+
+### Exemplos das rotas API
+```bash
+- Listar produtos: GET http://localhost:8000/api/v1/products
+- Buscar produto pelo nome: GET http://localhost:8000/api/v1/products/search?name=Teclado
+- Paginação de produtos: GET http://127.0.0.1:8000/api/v1/products/paginate?lastProductId=11&limit=10
+```
 ## Desafios
 
 - Os desafios 1 e 3 estão separados em arquivos diferentes.
