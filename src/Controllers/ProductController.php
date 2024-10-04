@@ -26,6 +26,24 @@ class ProductController
     /**
      * @throws JsonException
      */
+    public function paginate(): void
+    {
+        $lastProductId = $_GET['lastProductId'] ?? null;
+        $limit = $_GET['limit'] ?? 10;
+
+        $products = $this->productService->paginate($lastProductId, $limit);
+
+        if (isset($products['error'])) {
+            Response::json(['error' => $products['error']], 400);
+            return;
+        }
+
+        Response::json($products);
+    }
+
+    /**
+     * @throws JsonException
+     */
     public function show($id): void
     {
         Response::json([$this->productService->find($id)]);
@@ -39,7 +57,12 @@ class ProductController
         $name     = $_GET['name'] ?? '';
         $products = $this->productService->findByName($name);
 
-        return json_encode($products, JSON_THROW_ON_ERROR);
+        if (isset($products['error'])) {
+            return Response::json(['error' => $products['error']], 404);
+        }
+
+        Response::json($products);
+        return false;
     }
 
     /**

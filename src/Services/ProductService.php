@@ -22,6 +22,15 @@ class ProductService
         return $this->productRepository->all();
     }
 
+    public function paginate($lastProductId = null, $limit = 10): array
+    {
+        try {
+            return $this->productRepository->paginate($lastProductId, $limit);
+        } catch (Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
+    }
+
     public function find(int|string $id): Product|array|null
     {
         try {

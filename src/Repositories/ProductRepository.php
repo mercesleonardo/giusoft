@@ -81,6 +81,23 @@ class ProductRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function paginate($lastProductId = null, $limit = 10): array
+    {
+        $limit = (int)$limit;
+
+        if ($lastProductId) {
+            $stmt = $this->pdo->prepare('SELECT * FROM products WHERE id > :lastProductId ORDER BY id ASC LIMIT :limit');
+            $stmt->bindParam(':lastProductId', $lastProductId, PDO::PARAM_INT);
+        } else {
+            $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY id ASC LIMIT :limit');
+        }
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $this->extracted($stmt);
+    }
+
     public function extracted(false|PDOStatement $stmt): array
     {
         $stmt->execute();
