@@ -16,6 +16,8 @@ class ProductController
     }
 
     /**
+     * Lists all products.
+     *
      * @throws JsonException
      */
     public function index(): void
@@ -24,17 +26,20 @@ class ProductController
     }
 
     /**
+     * Paginates the products.
+     *
      * @throws JsonException
      */
     public function paginate(): void
     {
         $lastProductId = $_GET['lastProductId'] ?? null;
-        $limit = $_GET['limit'] ?? 10;
+        $limit         = $_GET['limit'] ?? 10;
 
         $products = $this->productService->paginate($lastProductId, $limit);
 
         if (isset($products['error'])) {
             Response::json(['error' => $products['error']], 400);
+
             return;
         }
 
@@ -42,6 +47,9 @@ class ProductController
     }
 
     /**
+     * Shows a specific product by ID.
+     *
+     * @param int $id The ID of the product to show.
      * @throws JsonException
      */
     public function show($id): void
@@ -50,7 +58,10 @@ class ProductController
     }
 
     /**
+     * Searches for products by name.
+     *
      * @throws JsonException
+     * @return false|string Returns false if the request is successful, otherwise returns a JSON response with an error message.
      */
     public function search(): false|string
     {
@@ -62,10 +73,13 @@ class ProductController
         }
 
         Response::json($products);
+
         return false;
     }
 
     /**
+     * Stores a new product.
+     *
      * @throws JsonException
      */
     public function store()
@@ -81,6 +95,9 @@ class ProductController
     }
 
     /**
+     * Updates an existing product.
+     *
+     * @param int $id The ID of the product to update.
      * @throws JsonException
      */
     public function update($id)
@@ -97,6 +114,9 @@ class ProductController
     }
 
     /**
+     * Deletes a product by ID.
+     *
+     * @param int $id The ID of the product to delete.
      * @throws JsonException
      */
     public function remove($id)

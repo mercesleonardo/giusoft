@@ -8,26 +8,55 @@ class Route
 {
     private static array $routes = [];
 
+    /**
+     * Registers a GET route.
+     *
+     * @param string $route The route path.
+     * @param string $action The controller@method to be called.
+     */
     public static function get($route, $action): void
     {
         self::$routes['GET'][$route] = $action;
     }
 
+    /**
+     * Registers a POST route.
+     *
+     * @param string $route The route path.
+     * @param string $action The controller@method to be called.
+     */
     public static function post($route, $action): void
     {
         self::$routes['POST'][$route] = $action;
     }
 
+    /**
+     * Registers a PUT route.
+     *
+     * @param string $route The route path.
+     * @param string $action The controller@method to be called.
+     */
     public static function put($route, $action): void
     {
         self::$routes['PUT'][$route] = $action;
     }
 
+    /**
+     * Registers a DELETE route.
+     *
+     * @param string $route The route path.
+     * @param string $action The controller@method to be called.
+     */
     public static function delete($route, $action): void
     {
         self::$routes['DELETE'][$route] = $action;
     }
 
+    /**
+     * Loads routes from a file.
+     *
+     * @param string $file The path to the routes file.
+     */
     public static function loadRoutesFromFile($file): void
     {
         if (file_exists($file)) {
@@ -36,7 +65,9 @@ class Route
     }
 
     /**
-     * @throws JsonException
+     * Resolves the current request to a controller action.
+     *
+     * @throws JsonException If JSON encoding fails.
      */
     public static function resolve()
     {
@@ -63,11 +94,16 @@ class Route
     }
 
     /**
-     * @throws JsonException
+     * Calls the controller action and returns the result.
+     *
+     * @param string $action The controller@method to be called.
+     * @param array $params The parameters to be passed to the controller method.
+     *
+     * @throws JsonException If JSON encoding fails.
      */
-    private static function callAction($action, $params = [])
+    private static function callAction(string $action, array $params = [])
     {
-        if (is_string($action)) {
+        if ($action) {
             [$controller, $method] = explode('@', $action);
 
             $controller = 'App\\Controllers\\' . $controller;

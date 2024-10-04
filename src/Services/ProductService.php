@@ -10,19 +10,37 @@ use RuntimeException;
 
 class ProductService
 {
-    private $productRepository;
+    private ProductRepository $productRepository;
 
+    /**
+     * ProductService constructor.
+     *
+     * @param ProductRepository $productRepository
+     */
     public function __construct(ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
     }
 
+    /**
+     * List all products.
+     *
+     * @return array
+     */
     public function list(): array
     {
         return $this->productRepository->all();
     }
 
-    public function paginate($lastProductId = null, $limit = 10): array
+    /**
+     * Paginate products.
+     *
+     * @param int|null $lastProductId The ID of the last product in the previous page.
+     * @param int $limit         The number of products per page.
+     *
+     * @return array
+     */
+    public function paginate(int $lastProductId = null, int $limit = 10): array
     {
         try {
             return $this->productRepository->paginate($lastProductId, $limit);
@@ -31,6 +49,13 @@ class ProductService
         }
     }
 
+    /**
+     * Find a product by ID.
+     *
+     * @param int|string $id The ID of the product.
+     *
+     * @return Product|array|null
+     */
     public function find(int|string $id): Product|array|null
     {
         try {
@@ -40,6 +65,13 @@ class ProductService
         }
     }
 
+    /**
+     * Find products by name.
+     *
+     * @param string $name The name of the product.
+     *
+     * @return array
+     */
     public function findByName(string $name): array
     {
         try {
@@ -49,6 +81,13 @@ class ProductService
         }
     }
 
+    /**
+     * Create a new product.
+     *
+     * @param array $data The data for the new product.
+     *
+     * @return array|string
+     */
     public function create(array $data): array|string
     {
         try {
@@ -67,6 +106,13 @@ class ProductService
         }
     }
 
+    /**
+     * Update an existing product.
+     *
+     * @param array $data The updated data for the product.
+     *
+     * @return array|string
+     */
     public function update(array $data): array|string
     {
         try {
@@ -90,6 +136,13 @@ class ProductService
         }
     }
 
+    /**
+     * Delete a product by ID.
+     *
+     * @param int|string $id The ID of the product.
+     *
+     * @return bool|array
+     */
     public function delete(int|string $id): bool|array
     {
         try {

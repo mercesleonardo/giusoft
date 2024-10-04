@@ -6,12 +6,27 @@ use RuntimeException;
 
 class Validator
 {
+    /**
+     * Validates an array of fields according to specific rules.
+     *
+     * @param array $fields The array of fields to validate.
+     *
+     * @return array The validated fields.
+     *
+     * @throws RuntimeException If a field fails validation.
+     */
     public static function validate(array $fields): array
     {
         foreach ($fields as $field => $value) {
             if ($field === 'name') {
-                if (!self::validateMin($value, 3) || !self::validateMax($value, 100)) {
-                    throw new RuntimeException("O campo ($field) precisa ter entre 3 e 100 caracteres.");
+                $length = strlen($value);
+
+                if ($length < 3) {
+                    throw new RuntimeException("O campo ($field) precisa ter no mínimo 3 caracteres.");
+                }
+
+                if ($length > 100) {
+                    throw new RuntimeException("O campo ($field) precisa no máximo 100 caracteres.");
                 }
             }
 
@@ -33,7 +48,14 @@ class Validator
         return $fields;
     }
 
-    protected static function validateRequired($value): bool
+    /**
+     * Validates if a value is required.
+     *
+     * @param mixed $value The value to validate.
+     *
+     * @return bool True if the value is required, false otherwise.
+     */
+    protected static function validateRequired(mixed $value): bool
     {
         if (is_null($value)) {
             return false;
@@ -50,21 +72,4 @@ class Validator
         return true;
     }
 
-    protected static function validateMax($value, $parameter): bool
-    {
-        if (is_countable($value)) {
-            return count($value) <= $parameter;
-        }
-
-        return strlen($value) <= $parameter;
-    }
-
-    protected static function validateMin($value, $parameter): bool
-    {
-        if (is_countable($value)) {
-            return count($value) >= $parameter;
-        }
-
-        return strlen($value) >= $parameter;
-    }
 }
