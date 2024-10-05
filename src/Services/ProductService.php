@@ -28,7 +28,7 @@ class ProductService
      */
     public function list(): array
     {
-        return $this->productRepository->all();
+        return $this->productRepository->listProducts();
     }
 
     /**
@@ -42,7 +42,7 @@ class ProductService
     public function paginate(int $lastProductId = null, int $limit = 10): array
     {
         try {
-            return $this->productRepository->paginate($lastProductId, $limit);
+            return $this->productRepository->getPaginateProducts($lastProductId, $limit);
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
@@ -58,7 +58,7 @@ class ProductService
     public function find(int|string $id): Product|array|null
     {
         try {
-            return $this->productRepository->find($id);
+            return $this->productRepository->findProductById($id);
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
@@ -74,7 +74,7 @@ class ProductService
     public function findByName(string $name): array
     {
         try {
-            return $this->productRepository->findByName($name);
+            return $this->productRepository->searchProductByName($name);
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
@@ -97,7 +97,7 @@ class ProductService
             ]);
 
             $product = Product::fromArray($fields);
-            $this->productRepository->save($product);
+            $this->productRepository->addProduct($product);
 
             return ['success' => true, 'message' => 'Produto criado com sucesso'];
         } catch (Exception $e) {
@@ -123,7 +123,7 @@ class ProductService
             ]);
 
             $product = Product::fromArray($fields);
-            $updated = $this->productRepository->update($product);
+            $updated = $this->productRepository->updateProduct($product);
 
             if (!$updated) {
                 return ['success' => false, 'error' => 'Desculpa, o produto não pode ser atualizado.'];
@@ -145,13 +145,13 @@ class ProductService
     public function delete(int|string $id): bool|array
     {
         try {
-            $product = $this->productRepository->find($id);
+            $product = $this->productRepository->findProductById($id);
 
             if (!$product) {
                 return ['success' => false, 'error' => 'Produto não encontrado', 'code' => 404];
             }
 
-            $this->productRepository->delete($product);
+            $this->productRepository->deleteProduct($product);
 
             return ['success' => true, 'message' => 'Produto deletado com sucesso'];
         } catch (Exception $e) {

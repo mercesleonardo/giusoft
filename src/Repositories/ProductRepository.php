@@ -23,7 +23,7 @@ class ProductRepository
      *
      * @return array An array of Product objects.
      */
-    public function all(): array
+    public function listProducts(): array
     {
         $stmt = $this->pdo->prepare('SELECT id, name, description, price FROM products');
 
@@ -37,7 +37,7 @@ class ProductRepository
      *
      * @return Product|null The found product or null if not found.
      */
-    public function find(int|string $id): ?Product
+    public function findProductById(int|string $id): ?Product
     {
         $stmt = $this->pdo->prepare('SELECT id, name, description, price FROM products WHERE id = :id');
         $stmt->bindParam(':id', $id);
@@ -58,10 +58,35 @@ class ProductRepository
      *
      * @return array An array of Product objects.
      */
-    public function findByName(string $name): array
+    public function searchProductByName(string $name): array
     {
         $stmt = $this->pdo->prepare('SELECT id, name, description, price FROM products WHERE name LIKE :name');
         $stmt->bindValue(':name', '%' . $name . '%');
+
+        return $this->extracted($stmt);
+    }
+
+    /**
+     * Retrieves a paginated list of products.
+     *
+     * @param int|null $lastProductId The ID of the last product retrieved in the previous page.
+     * @param int $limit         The maximum number of products to retrieve per page.
+     *
+     * @return array An array of Product objects.
+     */
+    public function getPaginateProducts(int $lastProductId = null, int $limit = 10): array
+    {
+        $limit = (int)$limit;
+
+        if ($lastProductId) {
+            $stmt = $this->pdo->prepare('SELECT * FROM products WHERE id > :lastProductId ORDER BY id ASC LIMIT :limit');
+            $stmt->bindParam(':lastProductId', $lastProductId, PDO::PARAM_INT);
+        } else {
+            $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY id ASC LIMIT :limit');
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
 
         return $this->extracted($stmt);
     }
@@ -73,7 +98,7 @@ class ProductRepository
      *
      * @return bool True if the product was saved successfully, false otherwise.
      */
-    public function save(Product $product): bool
+    public function addProduct(Product $product): bool
     {
         $stmt = $this->pdo->prepare('INSERT INTO products (name, description, price) VALUES (:name, :description, :price)');
 
@@ -93,7 +118,7 @@ class ProductRepository
      *
      * @return bool True if the product was updated successfully, false otherwise.
      */
-    public function update(Product $product): bool
+    public function updateProduct(Product $product): bool
     {
         $stmt = $this->pdo->prepare('UPDATE products SET name = :name, description = :description, price = :price WHERE id = :id');
 
@@ -114,38 +139,13 @@ class ProductRepository
      *
      * @return bool True if the product was deleted successfully, false otherwise.
      */
-    public function delete(Product $product): bool
+    public function deleteProduct(Product $product): bool
     {
         $stmt = $this->pdo->prepare('DELETE FROM products WHERE id = :id');
         $stmt->bindParam(':id', $product->id);
         $stmt->execute();
 
         return $stmt->rowCount() > 0;
-    }
-
-    /**
-     * Retrieves a paginated list of products.
-     *
-     * @param int|null $lastProductId The ID of the last product retrieved in the previous page.
-     * @param int $limit         The maximum number of products to retrieve per page.
-     *
-     * @return array An array of Product objects.
-     */
-    public function paginate(int $lastProductId = null, int $limit = 10): array
-    {
-        $limit = (int)$limit;
-
-        if ($lastProductId) {
-            $stmt = $this->pdo->prepare('SELECT * FROM products WHERE id > :lastProductId ORDER BY id ASC LIMIT :limit');
-            $stmt->bindParam(':lastProductId', $lastProductId, PDO::PARAM_INT);
-        } else {
-            $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY id ASC LIMIT :limit');
-        }
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-
-        $stmt->execute();
-
-        return $this->extracted($stmt);
     }
 
     /**
