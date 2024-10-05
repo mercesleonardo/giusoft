@@ -42,7 +42,7 @@ class Product
     public static function fromArray(array $data): self
     {
         if (!isset($data['name'], $data['description'], $data['price'])) {
-            throw new InvalidArgumentException('Missing required data in the array.');
+            throw new InvalidArgumentException('Informações essenciais estão faltando.');
         }
 
         return new self(

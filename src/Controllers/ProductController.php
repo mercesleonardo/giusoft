@@ -52,7 +52,7 @@ class ProductController
      * @param int $id The ID of the product to show.
      * @throws JsonException
      */
-    public function show($id): void
+    public function show(int $id): void
     {
         Response::json([$this->productService->find($id)]);
     }
@@ -87,11 +87,11 @@ class ProductController
         $data   = Request::body();
         $result = $this->productService->create($data);
 
-        if (isset($result['error'])) {
+        if (!$result['success']) {
             return Response::json(['error' => $result['error']], 400);
         }
 
-        Response::json(['message' => 'Produto criado com sucesso'], 201);
+        Response::json(['message' => $result['message']], 201);
     }
 
     /**
@@ -100,17 +100,17 @@ class ProductController
      * @param int $id The ID of the product to update.
      * @throws JsonException
      */
-    public function update($id)
+    public function update(int $id)
     {
         $data       = Request::body();
         $data['id'] = $id;
         $result     = $this->productService->update($data);
 
-        if (isset($result['error'])) {
+        if (!$result['success']) {
             return Response::json(['error' => $result['error']], 400);
         }
 
-        Response::json(['message' => 'Produto atualizado com sucesso']);
+        Response::json(['message' => $result['message']]);
     }
 
     /**
@@ -119,13 +119,14 @@ class ProductController
      * @param int $id The ID of the product to delete.
      * @throws JsonException
      */
-    public function remove($id)
+    public function remove(int $id)
     {
         $result = $this->productService->delete($id);
 
-        if (isset($result['error'])) {
+        if (!$result['success']) {
             return Response::json(['error' => $result['error']], $result['code']);
         }
-        Response::json(['message' => 'Produto deletado com sucesso']);
+
+        Response::json(['message' => $result['message']]);
     }
 }

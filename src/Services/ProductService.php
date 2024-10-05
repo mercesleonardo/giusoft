@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Repositories\ProductRepository;
 use App\Validator\Validator;
 use Exception;
-use RuntimeException;
 
 class ProductService
 {
@@ -86,9 +85,9 @@ class ProductService
      *
      * @param array $data The data for the new product.
      *
-     * @return array|string
+     * @return array
      */
-    public function create(array $data): array|string
+    public function create(array $data): array
     {
         try {
             $fields = Validator::validate([
@@ -100,9 +99,9 @@ class ProductService
             $product = Product::fromArray($fields);
             $this->productRepository->save($product);
 
-            return 'Produto criado com sucesso!';
+            return ['success' => true, 'message' => 'Produto criado com sucesso'];
         } catch (Exception $e) {
-            return ['error' => $e->getMessage()];
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 
@@ -127,12 +126,12 @@ class ProductService
             $updated = $this->productRepository->update($product);
 
             if (!$updated) {
-                return ['error' => 'Desculpa, o produto não pode ser atualizado.'];
+                return ['success' => false, 'error' => 'Desculpa, o produto não pode ser atualizado.'];
             }
 
-            return 'Produto atualizado com sucesso!';
+            return ['success' => true, 'message' => 'Produto atualizado com sucesso'];
         } catch (Exception $e) {
-            return ['error' => $e->getMessage()];
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 
@@ -149,15 +148,14 @@ class ProductService
             $product = $this->productRepository->find($id);
 
             if (!$product) {
-                throw new RuntimeException('Produto não encontrado.', 404);
+                return ['success' => false, 'error' => 'Produto não encontrado', 'code' => 404];
             }
 
-            return $this->productRepository->delete($product);
+            $this->productRepository->delete($product);
+
+            return ['success' => true, 'message' => 'Produto deletado com sucesso'];
         } catch (Exception $e) {
-            return [
-                'error' => $e->getMessage(),
-                'code'  => $e->getCode(),
-            ];
+            return ['success' => false, 'error' => $e->getMessage(), 'code' => $e->getCode()];
         }
     }
 }

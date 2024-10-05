@@ -78,7 +78,7 @@ class Route
 
         if (isset(self::$routes[$method])) {
             foreach (self::$routes[$method] as $route => $action) {
-                $routePattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $route);
+                $routePattern = preg_replace('/\{\w+}/', '([a-zA-Z0-9_]+)', $route);
                 $routePattern = str_replace('/', '\/', $routePattern);
 
                 if (preg_match('/^' . $routePattern . '$/', $path, $matches)) {
