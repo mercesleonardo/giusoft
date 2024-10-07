@@ -23,10 +23,10 @@ class Database
     {
         if (self::$connection === null) {
             try {
-                $host     = getenv('DB_HOST') ?: '127.0.0.1';
-                $dbname   = getenv('DB_NAME') ?: 'giusoft';
-                $username = getenv('DB_USERNAME') ?: 'root';
-                $password = getenv('DB_PASSWORD') ?: '';
+                $host     = env('DB_HOST', '127.0.0.1');
+                $dbname   = env('DB_NAME', 'giusoft');
+                $username = env('DB_USERNAME', 'root');
+                $password = env('DB_PASSWORD', '');
 
                 self::$connection = new PDO("mysql:host=$host;dbname=$dbname", $username, $password, [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
