@@ -1,8 +1,13 @@
 <?php
 
 require '../vendor/autoload.php';
+require '../src/helpers.php';
 
 use App\Core\Route;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 Route::loadRoutesFromFile('../routes/api.php');
 
